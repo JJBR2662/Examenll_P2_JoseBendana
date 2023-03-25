@@ -1,4 +1,5 @@
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
     /*
@@ -10,10 +11,11 @@ import java.util.ArrayList;
  *
  * @author roliv
  */
-public class Torneo {
+public class Torneo implements Serializable{
     private String nombre, periodo;
     private ArrayList<Equipo> equipos = new ArrayList();
     private ArrayList<Partido> partidos = new ArrayList();
+    private static final long serialVersionUID = 654864815631L;
 
     public Torneo(String nombre, String periodo) {
         this.nombre = nombre;

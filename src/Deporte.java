@@ -1,11 +1,13 @@
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 
-public class Deporte {
+public class Deporte implements Serializable{
     private ArrayList<Torneo> torneos = new ArrayList();
     private String  nombre;
-
+private static final long serialVersionUID = 252345345378L;
+    
     public Deporte() {
     }
 

@@ -1,7 +1,11 @@
 
-public class Partido {
+import java.io.Serializable;
+
+
+public class Partido implements Serializable{
     private String nombre1, nombre2;
     private int punt1, punt2;
+    private static final long serialVersionUID = 32545621561565L;
     
     public Partido(){
         

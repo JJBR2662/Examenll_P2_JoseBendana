@@ -1,8 +1,12 @@
 
-public class Equipo {
+import java.io.Serializable;
+
+
+public class Equipo implements Serializable{
     private String nombre;
     private int puntos;
-
+    private static final long serialVersionUID = 25984576981878L;
+    
     public Equipo() {
     }
 
