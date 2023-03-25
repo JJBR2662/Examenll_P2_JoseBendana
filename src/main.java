@@ -313,15 +313,15 @@ public class main extends javax.swing.JFrame {
             DefaultMutableTreeNode f = (DefaultMutableTreeNode) n.getChildAt(i);
             f.add(new DefaultMutableTreeNode(dep.get(dep.size() - 1)));
         }
-//            System.out.println( (String)f.getUserObject());
         m.reload();
     }//GEN-LAST:event_ppm_creardeporteActionPerformed
 
     private void crear_torneoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_crear_torneoActionPerformed
         String nombre = JOptionPane.showInputDialog(this, "Escriba el nombre del torneo");
         String periodo = (String) ((DefaultMutableTreeNode) sele.getParent()).getUserObject();
+        DefaultTreeModel m = (DefaultTreeModel) arbol.getModel();
         sele.add(new DefaultMutableTreeNode(new Torneo(nombre, periodo)));
-        System.out.println(periodo);
+        m.reload();
         for (int i = 0; i < dep.size(); i++) {
             if (sele.getUserObject() instanceof Deporte) {
                 if (((Deporte) sele.getUserObject()).getNombre().equals(dep.get(i).getNombre())) {
@@ -374,25 +374,28 @@ public class main extends javax.swing.JFrame {
             }
         }
         Collections.sort(puntaje);
-        System.out.println(puntaje);
+        int cual=-1;
         for (int p = puntaje.size() - 1; p >= 0; p--) {
+            cual++;
             for (int i = 0; i < dep.size(); i++) {
                 if (((DefaultMutableTreeNode) sele.getParent()).getUserObject() instanceof Deporte) {
                     if (dep.get(i).getNombre().equals(((Deporte) ((DefaultMutableTreeNode) sele.getParent()).getUserObject()).getNombre())) {
                         for (int j = 0; j < dep.get(i).getTorneos().size(); j++) {
                             if (((Torneo) sele.getUserObject()).getNombre().equals(dep.get(i).getTorneos().get(j).getNombre()) && (((Torneo) sele.getUserObject()).getPeriodo().equals(dep.get(i).getTorneos().get(j).getPeriodo()))) {
-                                for (int k = 0; k < dep.get(i).getTorneos().get(j).getEquipos().size(); k++) {
-                                    if (puntaje.get(p) == dep.get(i).getTorneos().get(j).getEquipos().get(k).getPuntos()) {
-                                        String[] data = {dep.get(i).getTorneos().get(j).getEquipos().get(k).getNombre(),
-                                            "" + dep.get(i).getTorneos().get(j).getEquipos().get(k).getPuntos()};
-                                        mod.addRow(data);
-                                    }
+//                                for (int k = 0; k < dep.get(i).getTorneos().get(j).getEquipos().size(); k++) {
+                                
+
+                                if (puntaje.get(p) == dep.get(i).getTorneos().get(j).getEquipos().get(cual).getPuntos()) {
+                                    String[] data = {dep.get(i).getTorneos().get(j).getEquipos().get(cual).getNombre(),
+                                        "" + dep.get(i).getTorneos().get(j).getEquipos().get(cual).getPuntos()};
+                                    mod.addRow(data);
                                 }
                             }
                         }
                     }
                 }
             }
+
         }
         tabla_resultados.setModel(mod);
         jd_tabla.setModal(true);
@@ -544,56 +547,58 @@ public class main extends javax.swing.JFrame {
                 objeto
                         = new ObjectInputStream(entrada);
                 Deporte temp = (Deporte) objeto.readObject();
+                dep.add(temp);
                 DefaultTreeModel m = (DefaultTreeModel) arbol.getModel();
-                DefaultMutableTreeNode raiz = (DefaultMutableTreeNode)m.getRoot();
+                DefaultMutableTreeNode raiz = (DefaultMutableTreeNode) m.getRoot();
                 for (int i = 0; i < 4; i++) {
                     DefaultMutableTreeNode f = (DefaultMutableTreeNode) raiz.getChildAt(i);
                     f.add(new DefaultMutableTreeNode(temp));
                 }
+                m.reload();
                 for (int i = 0; i < temp.getTorneos().size(); i++) {
                     if (temp.getTorneos().get(i).getPeriodo().equalsIgnoreCase("Q1")) {
-                        DefaultMutableTreeNode q1 = (DefaultMutableTreeNode)raiz.getChildAt(0);
+                        DefaultMutableTreeNode q1 = (DefaultMutableTreeNode) raiz.getChildAt(0);
                         DefaultMutableTreeNode tor = new DefaultMutableTreeNode(temp.getTorneos().get(i));
                         for (int j = 0; j < q1.getChildCount(); j++) {
                             DefaultMutableTreeNode dep = (DefaultMutableTreeNode) q1.getChildAt(j);
-                            for (int k = 0; k < ((Deporte)dep.getUserObject()).getTorneos().size(); k++) {
-                                if (((Deporte)dep.getUserObject()).getTorneos().get(k).getNombre().equals(((Torneo)tor.getUserObject()).getNombre())) {
-                                    dep.add(tor);
+                            for (int k = 0; k < ((Deporte) dep.getUserObject()).getTorneos().size(); k++) {
+                                if (((Deporte) dep.getUserObject()).getTorneos().get(k).getNombre().equals(((Torneo) tor.getUserObject()).getNombre())) {
+                                    dep.add(new DefaultMutableTreeNode(temp.getTorneos().get(i)));
                                 }
                             }
                             q1.add(dep);
                         }
-                    }else if(temp.getTorneos().get(i).getPeriodo().equalsIgnoreCase("Q2")){
-                        DefaultMutableTreeNode q2 = (DefaultMutableTreeNode)raiz.getChildAt(1);
+                    } else if (temp.getTorneos().get(i).getPeriodo().equalsIgnoreCase("Q2")) {
+                        DefaultMutableTreeNode q2 = (DefaultMutableTreeNode) raiz.getChildAt(1);
                         DefaultMutableTreeNode tor = new DefaultMutableTreeNode(temp.getTorneos().get(i));
                         for (int j = 0; j < q2.getChildCount(); j++) {
                             DefaultMutableTreeNode dep2 = (DefaultMutableTreeNode) q2.getChildAt(j);
-                            for (int k = 0; k < ((Deporte)dep2.getUserObject()).getTorneos().size(); k++) {
-                                if (((Deporte)dep2.getUserObject()).getTorneos().get(k).getNombre().equals(((Torneo)tor.getUserObject()).getNombre())) {
+                            for (int k = 0; k < ((Deporte) dep2.getUserObject()).getTorneos().size(); k++) {
+                                if (((Deporte) dep2.getUserObject()).getTorneos().get(k).getNombre().equals(((Torneo) tor.getUserObject()).getNombre())) {
                                     dep2.add(tor);
                                 }
                             }
                             q2.add(dep2);
                         }
-                    }else if(temp.getTorneos().get(i).getPeriodo().equalsIgnoreCase("Q4")){
-                        DefaultMutableTreeNode q3 = (DefaultMutableTreeNode)raiz.getChildAt(2);
+                    } else if (temp.getTorneos().get(i).getPeriodo().equalsIgnoreCase("Q4")) {
+                        DefaultMutableTreeNode q3 = (DefaultMutableTreeNode) raiz.getChildAt(2);
                         DefaultMutableTreeNode tor = new DefaultMutableTreeNode(temp.getTorneos().get(i));
                         for (int j = 0; j < q3.getChildCount(); j++) {
                             DefaultMutableTreeNode dep3 = (DefaultMutableTreeNode) q3.getChildAt(j);
-                            for (int k = 0; k < ((Deporte)dep3.getUserObject()).getTorneos().size(); k++) {
-                                if (((Deporte)dep3.getUserObject()).getTorneos().get(k).getNombre().equals(((Torneo)tor.getUserObject()).getNombre())) {
+                            for (int k = 0; k < ((Deporte) dep3.getUserObject()).getTorneos().size(); k++) {
+                                if (((Deporte) dep3.getUserObject()).getTorneos().get(k).getNombre().equals(((Torneo) tor.getUserObject()).getNombre())) {
                                     dep3.add(tor);
                                 }
                             }
                             q3.add(dep3);
                         }
-                    }else if(temp.getTorneos().get(i).getPeriodo().equalsIgnoreCase("Q5")){
-                        DefaultMutableTreeNode q4 = (DefaultMutableTreeNode)raiz.getChildAt(3);
+                    } else if (temp.getTorneos().get(i).getPeriodo().equalsIgnoreCase("Q5")) {
+                        DefaultMutableTreeNode q4 = (DefaultMutableTreeNode) raiz.getChildAt(3);
                         DefaultMutableTreeNode tor = new DefaultMutableTreeNode(temp.getTorneos().get(i));
                         for (int j = 0; j < q4.getChildCount(); j++) {
                             DefaultMutableTreeNode dep4 = (DefaultMutableTreeNode) q4.getChildAt(j);
-                            for (int k = 0; k < ((Deporte)dep4.getUserObject()).getTorneos().size(); k++) {
-                                if (((Deporte)dep4.getUserObject()).getTorneos().get(k).getNombre().equals(((Torneo)tor.getUserObject()).getNombre())) {
+                            for (int k = 0; k < ((Deporte) dep4.getUserObject()).getTorneos().size(); k++) {
+                                if (((Deporte) dep4.getUserObject()).getTorneos().get(k).getNombre().equals(((Torneo) tor.getUserObject()).getNombre())) {
                                     dep4.add(tor);
                                 }
                             }
@@ -601,7 +606,9 @@ public class main extends javax.swing.JFrame {
                         }
                     }
                 }
-            } //fin if
+                m.reload();
+
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -617,34 +624,38 @@ public class main extends javax.swing.JFrame {
     private void guardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_guardarActionPerformed
         FileOutputStream fw = null;
         ObjectOutputStream bw = null;
-        
+
         JFileChooser jfc = new JFileChooser();
-        FileNameExtensionFilter filtro = 
-                    new FileNameExtensionFilter(
-                            "Documentos Deportivos", "omf");
-         jfc.setFileFilter(filtro); 
-        int seleccion = jfc.showSaveDialog(this); 
-        
-        
+        FileNameExtensionFilter filtro
+                = new FileNameExtensionFilter(
+                        "Documentos Deportivos", "omf");
+        jfc.setFileFilter(filtro);
+        int seleccion = jfc.showSaveDialog(this);
+
         try {
             File archivo = null;
             if (jfc.getFileFilter().getDescription().equals(
-                        "Documentos Deportivos")) {
-                    archivo = 
-                        new File(jfc.getSelectedFile().getPath()+".omf");
-                }else{
-                    archivo = jfc.getSelectedFile();
-                }   
-                
-                fw = new FileOutputStream(archivo);
-                bw = new ObjectOutputStream(fw);
-                bw.writeObject(sele.getUserObject());
-                bw.flush();
-                
-                JOptionPane.showMessageDialog(this, 
-                        "Archivo guardado exitosamente");
+                    "Documentos Deportivos")) {
+                archivo
+                        = new File(jfc.getSelectedFile().getPath() + ".omf");
+            } else {
+                archivo = jfc.getSelectedFile();
+            }
+
+            fw = new FileOutputStream(archivo);
+            bw = new ObjectOutputStream(fw);
+            for (int i = 0; i < dep.size(); i++) {
+                if (dep.get(i).getNombre().equals(((Deporte) sele.getUserObject()).getNombre())) {
+                    bw.writeObject(sele.getUserObject());
+                    bw.flush();
+                }
+            }
+            HiloProgress hp = new HiloProgress(barra, ((Deporte) sele.getUserObject()));
+            hp.start();
+            JOptionPane.showMessageDialog(this,
+                    "Archivo guardado exitosamente");
         } catch (Exception e) {
-        }finally{
+        } finally {
             try {
                 bw.close();
                 fw.close();
